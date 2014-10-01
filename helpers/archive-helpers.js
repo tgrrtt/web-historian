@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var http = require('http-get');
+var urlModule = require('url');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,12 +27,19 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
+exports.readListOfUrls = function(fullPath, cb){
   //open sites.txt
   //  read file parse stream
-  //  return with a data structure???
+  fs.readFile(fullPath, {encoding: 'utf-8'}, function(err, data) {
+    var newArr = data.split('\n');
+    newArr = newArr.filter(function(v,k,c){
+      return v !== "";
+    });
+    cb(newArr);
+  });
 };
 
+// not going to be used in bot
 exports.isUrlInList = function(siteList, site){
   if (siteList.indexOf(site) < 0) {
     return false;
@@ -39,29 +47,32 @@ exports.isUrlInList = function(siteList, site){
   return true;
 };
 
-exports.addUrlToList = function(){
-  // open sites.txt
+exports.addUrlToList = function(filePath, urlFull){
+  // parse out 'http//'
+  var url = urlModule.parse(urlFull).hostname + '\n';
   // append site(actual string of text) to file
+  fs.appendFile(filePath,url);
 };
 
-exports.isURLArchived = function(path){
+exports.isURLArchived = function(path,cb){
+  // check if url/path exists in filepath
   fs.exists(path,function(exists){
-  // exists = boolean
+    if (!exists) {
+      // it doesnt exists, download it
+      cb();
+    }
   });
-  // if directory
-  //   return true;
-  // else
-  //   false
 };
 
-exports.downloadUrls = function(url){
+exports.downloadUrls = function(url,filePath){
   // http-get npm module
   // make get req to url
-  // var options = {
-  //   url: url;
-  // }
-  // var path = path.join(something.archivedSites, url (but without http))
-  // get.(options,path,function(){
-  //   completion callback
-  // });
+  var options = {
+    url: url
+  };
+  http.get(options,filePath,function(err,res){
+    if (err) {
+      console.log(err);
+    }
+  });
 };

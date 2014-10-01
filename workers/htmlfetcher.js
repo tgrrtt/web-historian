@@ -5,7 +5,7 @@
 var path = require('path');
 
 var helper = require('../helpers/archive-helpers.js');
-//console.log(helper.paths.list);
+
 helper.readListOfUrls(helper.paths.list, function(siteArr){
   // generate path based on urls
   for (var i = 0; i < siteArr.length;i++) {
