@@ -14,6 +14,7 @@
     "underscore": "^1.6.0"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha test/test.js"
+    "test": "./node_modules/mocha/bin/mocha test/test.js",
+    "watch": "./node_modules/mocha/bin/mocha test/test.js -w"
   }
 }
