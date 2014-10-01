@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http-get');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,16 +27,41 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
+  //open sites.txt
+  //  read file parse stream
+  //  return with a data structure???
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(siteList, site){
+  if (siteList.indexOf(site) < 0) {
+    return false;
+  } // else
+  return true;
 };
 
 exports.addUrlToList = function(){
+  // open sites.txt
+  // append site(actual string of text) to file
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(path){
+  fs.exists(path,function(exists){
+  // exists = boolean
+  });
+  // if directory
+  //   return true;
+  // else
+  //   false
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(url){
+  // http-get npm module
+  // make get req to url
+  // var options = {
+  //   url: url;
+  // }
+  // var path = path.join(something.archivedSites, url (but without http))
+  // get.(options,path,function(){
+  //   completion callback
+  // });
 };
