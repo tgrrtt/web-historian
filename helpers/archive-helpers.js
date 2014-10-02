@@ -57,10 +57,8 @@ exports.addUrlToList = function(filePath, urlFull){
 exports.isURLArchived = function(path,cb){
   // check if url/path exists in filepath
   fs.exists(path,function(exists){
-    if (!exists) {
-      // it doesnt exists, download it
-      cb();
-    }
+    // need to pass bool into cb.
+    cb(exists);
   });
 };
 

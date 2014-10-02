@@ -28,22 +28,53 @@ exports.handleRequest = function (req, res) {
   } else if (req.url === '/' || req.url === '') {
     switch (req.method) {
       case 'GET':
-        //   GET: server up index.html
-        //   fs.readFile something something
-        //
         var indexPath = path.join (archive.paths.siteAssets, "/index.html");
         fs.readFile(indexPath, {encoding: 'utf-8'} ,function(err, data) {
+          headers["Content-Type"] = 'text/html';
           res.writeHead(200, headers);
           res.end(data);
         });
-
         break;
       case 'POST':
-        //   POST: (fn NAME): boolean lookup in sites.txt
-        //         if in archives.
-        //            respond html archived
-        //         else
-        //            respond loading.
+        var siteName = '';
+        req.on('data', function(chunk) {
+          siteName += chunk;
+          //console.log(dat);
+        });
+        req.on('end', function() {
+          siteName = siteName.match(/^url=(.+)$/)[1];
+          siteName = siteName.replace('http%3A%2F%2F', '');
+          // readListOfUrls(pathToTextfile, callback)
+          archive.readListOfUrls(archive.paths.list, function(listOfUrls) {
+            // isUrlInList?
+            if (archive.isUrlInList(listOfUrls, siteName)) {
+              // if true
+              console.log("is in list");
+              // isUrlArchived?
+              var fullPath = path.join(archive.paths.archivedSites, siteName);
+              //console.log(fullPath);
+              archive.isURLArchived(fullPath, function(bool){
+                if (bool) {
+                  // url is archived, respond with html
+                  console.log('url is archived');
+                } else {
+                  // add url to sites.txt
+                  // respond with loading.html
+                  console.log('url is nor archived');
+                }
+              });
+            } else {
+              // add url to sites.txt
+              // respond with loading.html
+              console.log("i gon be loading.html");
+            }
+          });
+        });
+        //   POST: take pathname
+        //                if true respond with archive
+        //                else respond with loading.html
+        //             if false
+        //               respond loading.
         break;
       default:
         // if other method, res 404
@@ -56,7 +87,7 @@ exports.handleRequest = function (req, res) {
     var filePath = path.join(archive.paths.siteAssets, req.url);
 
     fs.readFile(filePath, {encoding: 'utf-8'} ,function(err, data) {
-      if (!err) {
+      if (data !== undefined) {
         headers["Content-Type"] = fileTypes[filePath.match(/\.(\w+)$/)[1]];
         res.writeHead(200, headers);
         res.end(data);

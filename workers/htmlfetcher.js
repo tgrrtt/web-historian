@@ -12,9 +12,11 @@ helper.readListOfUrls(helper.paths.list, function(siteArr){
     var siteUrl = siteArr[i];
     var filePath = path.join(helper.paths.archivedSites, siteUrl);
     // check if each url is archived
-    helper.isURLArchived(filePath,function(){
+    helper.isURLArchived(filePath,function(bool){
       // if not, downloadUrls();
-      helper.downloadUrls(siteUrl,filePath);
+      if (!bool) {
+        helper.downloadUrls(siteUrl,filePath);
+      }
     });
   }
 
