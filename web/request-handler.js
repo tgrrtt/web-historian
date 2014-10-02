@@ -18,13 +18,18 @@ exports.handleRequest = function (req, res) {
   // if anything else
   // serve it
   // but if / serve index.html
-
-
+  //
   // if (/archives/) serve archives/sites folder
   if (/^\/archives\//.test(req.url)) {
-    // serve up some hot files
-    console.log('archives yo');
-
+    var archiveUrl = req.url.match(/^\/archives\/(.+)$/)[1];
+    var archiveFilepath = path.join(archive.paths.archivedSites, archiveUrl);
+    fs.readFile(archiveFilepath, {encoding: 'utf-8'} ,function(err, data) {
+      console.log(err);
+      console.log(data);
+      headers["Content-Type"] = 'text/html';
+      res.writeHead(200, headers);
+      res.end(data);
+    });
   } else if (req.url === '/' || req.url === '') {
     switch (req.method) {
       case 'GET':
@@ -51,22 +56,37 @@ exports.handleRequest = function (req, res) {
               // if true
               console.log("is in list");
               // isUrlArchived?
+
               var fullPath = path.join(archive.paths.archivedSites, siteName);
               //console.log(fullPath);
               archive.isURLArchived(fullPath, function(bool){
                 if (bool) {
                   // url is archived, respond with html
-                  console.log('url is archived');
+                  fs.readFile(fullPath, {encoding: 'utf-8'} ,function(err, data) {
+                    headers["Content-Type"] = 'text/html';
+                    res.writeHead(200, headers);
+                    res.end(data);
+                  });
                 } else {
-                  // add url to sites.txt
                   // respond with loading.html
-                  console.log('url is nor archived');
+                  var htmlPath = path.join (archive.paths.siteAssets, "/loading.html");
+                  fs.readFile(htmlPath, {encoding: 'utf-8'} ,function(err, data) {
+                    headers["Content-Type"] = 'text/html';
+                    res.writeHead(302, headers);
+                    res.end(data);
+                  });
                 }
               });
             } else {
               // add url to sites.txt
+              archive.addUrlToList(archive.paths.list, siteName);
               // respond with loading.html
-              console.log("i gon be loading.html");
+              var htmlPath = path.join (archive.paths.siteAssets, "/loading.html");
+              fs.readFile(htmlPath, {encoding: 'utf-8'} ,function(err, data) {
+                headers["Content-Type"] = 'text/html';
+                res.writeHead(302, headers);
+                res.end(data);
+              });
             }
           });
         });

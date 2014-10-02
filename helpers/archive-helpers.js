@@ -48,8 +48,7 @@ exports.isUrlInList = function(siteList, site){
 };
 
 exports.addUrlToList = function(filePath, urlFull){
-  // parse out 'http//'
-  var url = urlModule.parse(urlFull).hostname + '\n';
+  var url = urlFull + '\n';
   // append site(actual string of text) to file
   fs.appendFile(filePath,url);
 };

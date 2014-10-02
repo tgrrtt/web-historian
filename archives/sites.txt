@@ -2,3 +2,5 @@ www.google.com
 hackreactor.com
 github.com
 zynga.com
+lebron.technology
+google.com
