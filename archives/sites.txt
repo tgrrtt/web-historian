@@ -1,6 +1,10 @@
 www.google.com
 hackreactor.com
-github.com
 zynga.com
 lebron.technology
 google.com
+substack.net
+github.com
+apple.com
+facebook.com
+twitter.com
